@@ -3,4 +3,8 @@ Rails.application.routes.draw do
   root 'images#index'
   resources :images, only: [:index, :create, :new, :show, :destroy] # rubocop:disable Style/SymbolArray
   resources :feedbacks, only: [:new]
+
+  namespace :api do
+    resource :feedbacks, only: [:create]
+  end
 end
