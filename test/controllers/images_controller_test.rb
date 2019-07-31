@@ -11,6 +11,15 @@ class ImageControllerTest < ActionDispatch::IntegrationTest
     assert_select 'p', 'New Image Submission Page'
   end
 
+  def test_show
+    image = Image.create!({link: 'http://valid.com'})
+    get image_path(image.id)
+    assert_response :ok
+    assert_select 'img' do
+      assert_select '[src=?]', 'http://valid.com'
+    end
+  end
+
   def test_create_valid_link
     assert_difference 'Image.count', 1 do
       post images_path, params: { image: {link: 'http://valid.com'} }

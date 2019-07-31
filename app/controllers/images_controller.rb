@@ -3,6 +3,11 @@ class ImagesController < ApplicationController
     @image = Image.new
   end
 
+  def show
+    image = Image.find(params[:id])
+    @link = image.link
+  end
+
   def create
     image_new = Image.new(link: params[:image][:link])
     if image_new.valid?
