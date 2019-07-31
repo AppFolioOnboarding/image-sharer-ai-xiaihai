@@ -17,6 +17,5 @@ class ImagesController < ApplicationController
       @image = image_new
       render 'new'
     end
-
   end
 end
