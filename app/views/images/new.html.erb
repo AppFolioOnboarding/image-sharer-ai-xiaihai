@@ -1,4 +1,16 @@
  <p>
    New Image Submission Page
 
+   <% if @image.errors.any? %>
+      <div>
+        <p>
+          Please submit a real image link.
+        </p>
+      </div>
+   <% end %>
+
+   <%= simple_form_for @image do |f| %>
+       <%= f.input :link %>
+       <%= f.button :submit %>
+   <% end %>
  </p>
