@@ -31,4 +31,17 @@ class ImageControllerTest < ActionDispatch::IntegrationTest
       post images_path, params: { image: { link: 'invalid-com' } }
     end
   end
+
+  def test_index
+    Image.create!(link: 'http://valid1.com')
+    Image.create!(link: 'http://valid2.com')
+    get images_path
+    assert_response :ok
+
+    assert_select 'img' do |elements|
+      elements.each_with_index do |element, index|
+        assert_equal element[:src], "http://valid#{2 - index}.com"
+      end
+    end
+  end
 end
