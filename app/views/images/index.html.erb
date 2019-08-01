@@ -1,0 +1,8 @@
+ <p>
+   See all the images
+ </p>
+ <% @image_list.each do |image| %>
+       <%= image_tag(image.link, :width => "400") %>
+ <% end %>
+
+

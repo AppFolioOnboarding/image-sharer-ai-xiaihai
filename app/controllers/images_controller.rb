@@ -18,4 +18,8 @@ class ImagesController < ApplicationController
       render 'new'
     end
   end
+
+  def index
+    @image_list = Image.order('id DESC')
+  end
 end
