@@ -9,7 +9,7 @@ class ImagesController < ApplicationController
   end
 
   def create
-    image_new = Image.new(link: params[:image][:link])
+    image_new = Image.new(link: params[:image][:link], tag_list: params[:image][:tag_list])
     if image_new.valid?
       image_new.save
       redirect_to image_path(image_new.id)

@@ -32,6 +32,13 @@ class ImageControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
+  def test_create_tags
+    assert_difference 'Image.count', 1 do
+      post images_path, params: { image: { link: 'http://valid.com', tag_list: 'tag1, tag2' } }
+    end
+    assert_equal %w[tag1 tag2], Image.last.tag_list
+  end
+
   def test_index
     Image.create!(link: 'http://valid1.com')
     Image.create!(link: 'http://valid2.com')
