@@ -12,14 +12,19 @@ class ImageControllerTest < ActionDispatch::IntegrationTest
   end
 
   def test_show
-    image = Image.create!(link: 'http://valid.com', tag_list: 'tag1, tag2')
+    image = Image.create!(link: 'http://valid.com', tag_list: 'tag0, tag1')
     get image_path(image.id)
     assert_response :ok
     assert_select 'img' do
       assert_select '[src=?]', 'http://valid.com'
     end
-    assert_select 'div.tag', 'tag1'
-    assert_select 'div.tag', 'tag2'
+
+    assert_select 'div.tag > a' do |tags|
+      tags.each_with_index do |t, index|
+        assert_includes t.to_s, "tag#{index}"
+        assert_equal t[:href], images_path(tag: "tag#{index}")
+      end
+    end
   end
 
   def test_create_valid_link
