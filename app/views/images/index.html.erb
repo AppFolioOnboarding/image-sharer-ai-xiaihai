@@ -2,7 +2,6 @@
    See all the images
  </p>
  <% @image_list.each do |image| %>
-       <%= image_tag(image.link, :width => "400") %>
+     <%= image_tag(image.link, :width => "400") %>
+     <div class='tags'> <%= image.tag_list %> </div>
  <% end %>
-
-
