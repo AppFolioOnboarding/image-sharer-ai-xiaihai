@@ -6,7 +6,7 @@
 
      <% image.tag_list.each do |t| %>
          <div class='tag'>
-           <%= t %>
+           <%= link_to t, images_path(tag: t) %>
          </div>
      <% end %>
  <% end %>

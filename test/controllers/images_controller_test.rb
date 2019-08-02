@@ -58,9 +58,10 @@ class ImageControllerTest < ActionDispatch::IntegrationTest
       end
     end
 
-    assert_select 'div.tag' do |tags|
+    assert_select 'div.tag > a' do |tags|
       tags.each_with_index do |tag, index|
         assert_includes tag.to_s, index.to_s
+        assert_equal tag[:href], images_path(tag: index.to_s)
       end
     end
   end
