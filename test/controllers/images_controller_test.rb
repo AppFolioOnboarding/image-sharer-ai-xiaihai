@@ -41,7 +41,7 @@ class ImageControllerTest < ActionDispatch::IntegrationTest
     assert_equal %w[tag1 tag2], Image.last.tag_list
   end
 
-  def test_index
+  def test_index_get_all
     Image.create!(link: 'http://valid1.com', tag_list: '2, 3')
     Image.create!(link: 'http://valid0.com', tag_list: '0, 1')
     get images_path
@@ -57,6 +57,27 @@ class ImageControllerTest < ActionDispatch::IntegrationTest
       tags.each_with_index do |tag, index|
         assert_includes tag.to_s, index.to_s
       end
+    end
+  end
+
+  def test_index_filter_single_tag
+    Image.create!(link: 'http://valid1.com', tag_list: 'a, b')
+    Image.create!(link: 'http://valid.com', tag_list: 'b')
+    Image.create!(link: 'http://valid0.com', tag_list: 'a, c, d')
+
+    get images_path(tag: 'a')
+    assert_response :ok
+    assert_select 'img' do |images|
+      images.each_with_index do |image, index|
+        assert_equal image[:src], "http://valid#{index}.com"
+      end
+    end
+
+    get images_path(tag: 'c')
+    assert_response :ok
+    assert_select 'img' do |images|
+      assert_equal images.length, 1
+      assert_equal images[0][:src], 'http://valid0.com'
     end
   end
 end
