@@ -3,5 +3,10 @@
  </p>
  <% @image_list.each do |image| %>
      <%= image_tag(image.link, :width => "400") %>
-     <div class='tags'> <%= image.tag_list %> </div>
+
+     <% image.tag_list.each do |t| %>
+         <div class='tag'>
+           <%= link_to t, images_path(tag: t) %>
+         </div>
+     <% end %>
  <% end %>
