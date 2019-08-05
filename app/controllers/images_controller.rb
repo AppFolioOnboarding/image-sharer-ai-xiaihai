@@ -4,9 +4,7 @@ class ImagesController < ApplicationController
   end
 
   def show
-    image = Image.find(params[:id])
-    @link = image.link
-    @tag_list = image.tag_list
+    @image = Image.find(params[:id])
   end
 
   def create

@@ -1,7 +1,7 @@
  <p>
-   <%= image_tag(@link, :width => "400") %>
+   <%= image_tag(@image.link, :width => "400") %>
  </p>
- <% @tag_list.each do |t| %>
+ <% @image.tag_list.each do |t| %>
     <div class='tag'>
       <%= link_to t, images_path(tag: t) %>
     </div>
