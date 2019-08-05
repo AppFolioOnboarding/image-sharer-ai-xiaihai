@@ -51,8 +51,9 @@ class ImageControllerTest < ActionDispatch::IntegrationTest
   end
 
   def test_index_get_all
-    Image.create!(link: 'http://valid1.com', tag_list: '2, 3')
-    Image.create!(link: 'http://valid0.com', tag_list: '0, 1')
+    Image.create!(link: 'http://valid1.com', tag_list: '2, 3', visible: 1)
+    Image.create!(link: 'http://valid0.com', tag_list: '0, 1', visible: 1)
+    Image.create!(link: 'http://deleted.com', tag_list: '0, 3', visible: 0)
     get images_path
     assert_response :ok
 
@@ -76,9 +77,10 @@ class ImageControllerTest < ActionDispatch::IntegrationTest
   end
 
   def test_index_filter_single_tag
-    Image.create!(link: 'http://valid1.com', tag_list: 'a, b')
-    Image.create!(link: 'http://valid.com', tag_list: 'b')
-    Image.create!(link: 'http://valid0.com', tag_list: 'a, c, d')
+    Image.create!(link: 'http://valid1.com', tag_list: 'a, b', visible: 1)
+    Image.create!(link: 'http://valid.com', tag_list: 'b', visible: 1)
+    Image.create!(link: 'http://valid0.com', tag_list: 'a, c, d', visible: 1)
+    Image.create!(link: 'http://deleted.com', tag_list: 'a, d', visible: 0)
 
     get images_path(tag: 'a')
     assert_response :ok

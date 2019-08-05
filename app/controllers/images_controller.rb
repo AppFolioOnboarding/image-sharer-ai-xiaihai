@@ -22,9 +22,9 @@ class ImagesController < ApplicationController
 
   def index
     @image_list = if params[:tag].nil?
-                    Image.order('id DESC')
+                    Image.where(visible: 1).order('id DESC')
                   else
-                    Image.tagged_with(params[:tag]).order('id DESC')
+                    Image.tagged_with(params[:tag]).where(visible: 1).order('id DESC')
                   end
   end
 end
