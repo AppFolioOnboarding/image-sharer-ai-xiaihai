@@ -2,12 +2,12 @@ require 'test_helper'
 
 class ImageControllerTest < ActionDispatch::IntegrationTest
   def test_new
-    get root_path
+    get new_image_path
     assert_response :ok
   end
 
   def test_new_view_body
-    get root_path
+    get new_image_path
     assert_select 'p', 'New Image Submission Page'
   end
 
@@ -24,6 +24,10 @@ class ImageControllerTest < ActionDispatch::IntegrationTest
         assert_includes t.to_s, "tag#{index}"
         assert_equal t[:href], images_path(tag: "tag#{index}")
       end
+    end
+    assert_select 'a', 'create an image' do |element|
+      assert_equal element.size, 1
+      assert_equal element[0][:href], new_image_path
     end
   end
 
@@ -51,6 +55,11 @@ class ImageControllerTest < ActionDispatch::IntegrationTest
     Image.create!(link: 'http://valid0.com', tag_list: '0, 1')
     get images_path
     assert_response :ok
+
+    assert_select 'a', 'create an image' do |element|
+      assert_equal element.size, 1
+      assert_equal element[0][:href], new_image_path
+    end
 
     assert_select 'img' do |images|
       images.each_with_index do |image, index|

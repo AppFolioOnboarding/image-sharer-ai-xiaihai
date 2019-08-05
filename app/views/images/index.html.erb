@@ -1,5 +1,6 @@
  <p>
    See all the images
+   <%= link_to 'create an image', new_image_path %>
  </p>
  <% @image_list.each do |image| %>
      <%= image_tag(image.link, :width => "400") %>
