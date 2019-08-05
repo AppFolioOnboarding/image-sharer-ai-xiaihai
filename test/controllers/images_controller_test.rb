@@ -25,6 +25,10 @@ class ImageControllerTest < ActionDispatch::IntegrationTest
         assert_equal t[:href], images_path(tag: "tag#{index}")
       end
     end
+    assert_select 'a', 'create an image' do |element|
+      assert_equal element.size, 1
+      assert_equal element[0][:href], new_image_path
+    end
   end
 
   def test_create_valid_link
