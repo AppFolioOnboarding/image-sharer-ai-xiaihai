@@ -25,6 +25,12 @@ class ImageControllerTest < ActionDispatch::IntegrationTest
         assert_equal t[:href], images_path(tag: "tag#{index}")
       end
     end
+
+    assert_select 'a', 'delete this image' do |elements|
+      assert_equal elements.size, 1
+      assert_equal elements[0][:href], image_path(image)
+    end
+
     assert_select 'a', 'create an image' do |element|
       assert_equal element.size, 1
       assert_equal element[0][:href], new_image_path
