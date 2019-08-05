@@ -80,6 +80,12 @@ class ImageControllerTest < ActionDispatch::IntegrationTest
         assert_equal tag[:href], images_path(tag: index.to_s)
       end
     end
+
+    assert_select 'a', 'delete this image' do |elements|
+      elements.each_with_index do |element, index|
+        assert_equal element[:href], image_path(2 - index)
+      end
+    end
   end
 
   def test_index_filter_single_tag
