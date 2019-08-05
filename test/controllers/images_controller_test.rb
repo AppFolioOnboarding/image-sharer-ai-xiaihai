@@ -56,6 +56,11 @@ class ImageControllerTest < ActionDispatch::IntegrationTest
     get images_path
     assert_response :ok
 
+    assert_select 'a', 'create an image' do |element|
+      assert_equal element.size, 1
+      assert_equal element[0][:href], new_image_path
+    end
+
     assert_select 'img' do |images|
       images.each_with_index do |image, index|
         assert_equal image[:src], "http://valid#{index}.com"
