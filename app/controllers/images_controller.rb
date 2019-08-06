@@ -4,9 +4,7 @@ class ImagesController < ApplicationController
   end
 
   def show
-    image = Image.find(params[:id])
-    @link = image.link
-    @tag_list = image.tag_list
+    @image = Image.find(params[:id])
   end
 
   def create
@@ -22,9 +20,15 @@ class ImagesController < ApplicationController
 
   def index
     @image_list = if params[:tag].nil?
-                    Image.order('id DESC')
+                    Image.where(visible: 1).order('id DESC')
                   else
-                    Image.tagged_with(params[:tag]).order('id DESC')
+                    Image.tagged_with(params[:tag]).where(visible: 1).order('id DESC')
                   end
+  end
+
+  def destroy
+    image = Image.find(params[:id])
+    image.update!(visible: 0)
+    redirect_to images_path
   end
 end

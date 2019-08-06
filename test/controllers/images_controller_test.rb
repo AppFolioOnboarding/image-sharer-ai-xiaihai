@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class ImageControllerTest < ActionDispatch::IntegrationTest
+class ImageControllerTest < ActionDispatch::IntegrationTest # rubocop:disable Metrics/ClassLength
   def test_new
     get new_image_path
     assert_response :ok
@@ -25,6 +25,12 @@ class ImageControllerTest < ActionDispatch::IntegrationTest
         assert_equal t[:href], images_path(tag: "tag#{index}")
       end
     end
+
+    assert_select 'a', 'delete this image' do |elements|
+      assert_equal elements.size, 1
+      assert_equal elements[0][:href], image_path(image)
+    end
+
     assert_select 'a', 'create an image' do |element|
       assert_equal element.size, 1
       assert_equal element[0][:href], new_image_path
@@ -51,8 +57,9 @@ class ImageControllerTest < ActionDispatch::IntegrationTest
   end
 
   def test_index_get_all
-    Image.create!(link: 'http://valid1.com', tag_list: '2, 3')
-    Image.create!(link: 'http://valid0.com', tag_list: '0, 1')
+    Image.create!(link: 'http://valid1.com', tag_list: '2, 3', visible: 1)
+    Image.create!(link: 'http://valid0.com', tag_list: '0, 1', visible: 1)
+    Image.create!(link: 'http://deleted.com', tag_list: '0, 3', visible: 0)
     get images_path
     assert_response :ok
 
@@ -73,12 +80,19 @@ class ImageControllerTest < ActionDispatch::IntegrationTest
         assert_equal tag[:href], images_path(tag: index.to_s)
       end
     end
+
+    assert_select 'a', 'delete this image' do |elements|
+      elements.each_with_index do |element, index|
+        assert_equal element[:href], image_path(2 - index)
+      end
+    end
   end
 
   def test_index_filter_single_tag
-    Image.create!(link: 'http://valid1.com', tag_list: 'a, b')
-    Image.create!(link: 'http://valid.com', tag_list: 'b')
-    Image.create!(link: 'http://valid0.com', tag_list: 'a, c, d')
+    Image.create!(link: 'http://valid1.com', tag_list: 'a, b', visible: 1)
+    Image.create!(link: 'http://valid.com', tag_list: 'b', visible: 1)
+    Image.create!(link: 'http://valid0.com', tag_list: 'a, c, d', visible: 1)
+    Image.create!(link: 'http://deleted.com', tag_list: 'a, d', visible: 0)
 
     get images_path(tag: 'a')
     assert_response :ok
@@ -93,6 +107,22 @@ class ImageControllerTest < ActionDispatch::IntegrationTest
     assert_select 'img' do |images|
       assert_equal images.length, 1
       assert_equal images[0][:src], 'http://valid0.com'
+    end
+  end
+
+  def test_destroy
+    image1 = Image.create!(link: 'http://valid1.com', visible: 1)
+    image2 = Image.create!(link: 'http://valid2.com', visible: 1)
+
+    delete image_path(image1)
+    image1.reload
+    image2.reload
+    refute_predicate image1, :visible?
+    assert_predicate image2, :visible?
+
+    follow_redirect!
+    assert_select 'p' do |elements|
+      assert_includes elements[0].to_s, 'See all the images'
     end
   end
 end
