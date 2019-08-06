@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class ImageControllerTest < ActionDispatch::IntegrationTest
+class ImageControllerTest < ActionDispatch::IntegrationTest # rubocop:disable Metrics/ClassLength
   def test_new
     get new_image_path
     assert_response :ok
@@ -107,6 +107,22 @@ class ImageControllerTest < ActionDispatch::IntegrationTest
     assert_select 'img' do |images|
       assert_equal images.length, 1
       assert_equal images[0][:src], 'http://valid0.com'
+    end
+  end
+
+  def test_destroy
+    image1 = Image.create!(link: 'http://valid1.com', visible: 1)
+    image2 = Image.create!(link: 'http://valid2.com', visible: 1)
+
+    delete image_path(image1)
+    image1.reload
+    image2.reload
+    refute_predicate image1, :visible?
+    assert_predicate image2, :visible?
+
+    follow_redirect!
+    assert_select 'p' do |elements|
+      assert_includes elements[0].to_s, 'See all the images'
     end
   end
 end

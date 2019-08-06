@@ -25,4 +25,10 @@ class ImagesController < ApplicationController
                     Image.tagged_with(params[:tag]).where(visible: 1).order('id DESC')
                   end
   end
+
+  def destroy
+    image = Image.find(params[:id])
+    image.update!(visible: 0)
+    redirect_to images_path
+  end
 end
