@@ -3,9 +3,9 @@ module Api
     def create
       feedback_new = Feedback.new(name: params[:feedback][:name], comment: params[:feedback][:comment])
       if feedback_new.valid? && feedback_new.save
-        render json: {}, status: 200
+        render json: { message: 'success' }, status: 200
       else
-        render json: {}, status: 422
+        render json: { message: 'failure' }, status: 422
       end
     end
   end
